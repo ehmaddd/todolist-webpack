@@ -1,23 +1,22 @@
-import _ from 'lodash';
 import './style.css';
-import populateList from './populatelist';
+import populateList from './populatelist.js';
 
-let taskArr = [
+const taskArr = [
   {
-    description: "Have lunch",
-    completed: "false",
-    index: 1
+    description: 'Have lunch',
+    completed: false,
+    index: 1,
   },
   {
-    description: "Do yoga",
-    completed: "true",
-    index: 2
+    description: 'Do yoga',
+    completed: true,
+    index: 2,
   },
   {
-    description: "Drink green tea",
-    completed: "false",
-    index: 3
-  }
+    description: 'Drink green tea',
+    completed: false,
+    index: 3,
+  },
 ];
 
 populateList(taskArr);
