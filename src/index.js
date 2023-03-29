@@ -106,6 +106,9 @@ const addDeleteBtn = () => {
   for (let i = 0; i < delBtn.length; i += 1) {
     delBtn[i].addEventListener('click', () => {
       todo.taskArr.splice(i, 1);
+      for (let j = 0; j < todo.taskArr.length; j += 1) {
+        todo.taskArr[j].index = j;
+      }
       todo.storeLocalStorage();
       window.location.reload();
     });
