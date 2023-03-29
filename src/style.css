@@ -10,6 +10,7 @@
   align-items: center;
   height: auto;
   text-align: left;
+  margin-top: -15px;
 }
 
 #heading {
@@ -31,6 +32,28 @@
   font-size: medium;
   font-style: italic;
   border: 0;
+}
+
+#header-div ul {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  height: auto;
+  text-align: left;
+}
+
+#header-div li {
+  border: 1px solid gainsboro;
+  list-style-type: none;
+  width: 35%;
+  height: 2.7rem;
+  font-size: medium;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  padding-left: 1%;
 }
 
 #list-ul li {
@@ -65,4 +88,30 @@
 .clear-com {
   color: darkkhaki;
   font-style: italic;
+}
+
+.delete-btn {
+  background-color: black;
+  border: 1px solid red;
+  border-radius: 8px;
+  position: absolute;
+  right: 31%;
+  color: white;
+  padding: 4px 6px;
+  cursor: pointer;
+}
+
+.tooltip {
+  visibility: hidden;
+  position: absolute;
+  z-index: 1;
+  background: #00732c;
+  padding: 12px;
+  font-size: 1rem;
+  color: #fff;
+  display: flex;
+  border: 1px solid #00732c;
+  border-radius: 8px;
+  top: 13%;
+  left: 45%;
 }
