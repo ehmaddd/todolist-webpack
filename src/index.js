@@ -92,16 +92,22 @@ const addChecktext = () => {
 
 const deleteComplete = () => {
   const clearComplete = document.querySelector('.clear-complete');
+  let resArr;
   if (clearComplete && todo.check) {
     clearComplete.addEventListener('click', () => {
-      todo.check.sort();
-      for (let k = todo.check.length - 1; k >= 0; k -= 1) {
-        todo.taskArr.splice(todo.check[k], 1);
-      }
+      todo.check.sort((a, b) => b - a);
+      resArr = todo.taskArr.filter((task) => {
+        if (task.completed !== 'false') {
+          return false;
+        }
+        return task;
+      });
+      todo.taskArr = resArr;
       for (let j = 0; j < todo.taskArr.length; j += 1) {
         todo.taskArr[j].index = j + 1;
       }
       todo.storeLocalStorage();
+      todo.loadLocalStorage();
       window.location.reload();
     });
   }
