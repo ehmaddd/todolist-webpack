@@ -90,6 +90,16 @@
   font-style: italic;
 }
 
+.clear-active {
+  background-color: blue;
+  font-style: italic;
+  cursor: pointer;
+}
+
+.clear-active:hover {
+  color: white;
+}
+
 .delete-btn {
   background-color: black;
   border: 1px solid red;
