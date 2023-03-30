@@ -1,9 +1,8 @@
 import './style.css';
 import populateList from './populatelist.js';
 import taskAuth from './taskauth.js';
-import checkBox from './check.js';
-import uncheckBox from './uncheck.js';
 import getPrompt from './getNewValue.js';
+import statusUpdate from './status_update.js';
 
 class ToDo {
   constructor() {
@@ -60,7 +59,6 @@ taskText.addEventListener('keyup', (ev) => {
   if (ev.key === 'Enter') {
     todo.addTask();
     todo.storeLocalStorage();
-    todo.showData();
     window.location.reload();
   }
 });
@@ -70,16 +68,7 @@ const addCheckboxEvent = () => {
   const check = document.querySelectorAll('.check-task');
   for (let i = 0; i < check.length; i += 1) {
     check[i].addEventListener('click', (ev) => {
-      const checkId = ev.target.id;
-      const checkCheck = ev.target.checked;
-      if (checkCheck === true) {
-        todo.check.push(checkId);
-        checkBox(checkId);
-      } else if (checkCheck === false) {
-        const index = todo.taskArr.indexOf(checkId);
-        todo.check.splice(index, 1);
-        uncheckBox(checkId);
-      }
+      statusUpdate(ev, todo.check, todo.taskArr);
     });
   }
 };
@@ -101,17 +90,51 @@ const addChecktext = () => {
   }
 };
 
+const deleteComplete = () => {
+  const clearComplete = document.querySelector('.clear-complete');
+  let resArr;
+  if (clearComplete && todo.check) {
+    clearComplete.addEventListener('click', () => {
+      todo.check.sort((a, b) => b - a);
+      resArr = todo.taskArr.filter((task) => {
+        if (task.completed !== 'false') {
+          return false;
+        }
+        return task;
+      });
+      todo.taskArr = resArr;
+      for (let j = 0; j < todo.taskArr.length; j += 1) {
+        todo.taskArr[j].index = j + 1;
+      }
+      todo.storeLocalStorage();
+      todo.loadLocalStorage();
+      window.location.reload();
+    });
+  }
+};
+
 const addDeleteBtn = () => {
   const delBtn = document.querySelectorAll('.delete-btn');
   for (let i = 0; i < delBtn.length; i += 1) {
     delBtn[i].addEventListener('click', () => {
       todo.taskArr.splice(i, 1);
       for (let j = 0; j < todo.taskArr.length; j += 1) {
-        todo.taskArr[j].index = j;
+        todo.taskArr[j].index = j + 1;
       }
       todo.storeLocalStorage();
       window.location.reload();
     });
+  }
+};
+
+const markStatus = () => {
+  const checkBox = document.querySelectorAll('.check-task');
+  for (let i = 0; i < checkBox.length; i += 1) {
+    if (todo.taskArr[i].completed === 'false') {
+      checkBox[i].checked = false;
+    } else {
+      checkBox[i].checked = true;
+    }
   }
 };
 
@@ -120,6 +143,8 @@ window.addEventListener('load', () => {
   addCheckboxEvent();
   addChecktext();
   addDeleteBtn();
+  deleteComplete();
+  markStatus();
 });
 
 const todoList = document.querySelector('#list-ul');
