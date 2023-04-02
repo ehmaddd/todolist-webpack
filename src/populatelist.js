@@ -1,4 +1,5 @@
 import refreshList from './refresh-list.js';
+import Icon from './recycle.png';
 
 const list = document.querySelector('#to-do-list');
 const listUl = document.querySelector('#list-ul');
@@ -8,7 +9,11 @@ const populateList = (taskArr) => {
   if (length > 0) {
     refreshList();
     for (let i = 0; i < taskArr.length; i += 1) {
-      const li = document.createElement('li');
+      const liMain = document.createElement('li');
+
+      const task = document.createElement('p');
+      task.textContent = taskArr[i].description;
+      task.classList.add('test-task');
 
       const check = document.createElement('input');
       check.type = 'checkbox';
@@ -16,32 +21,32 @@ const populateList = (taskArr) => {
       check.id = i;
       check.style.marginRight = '2%';
 
-      const task = document.createElement('p');
-      task.textContent = taskArr[i].description;
-      task.classList.add('test-task');
+      const delButton = document.createElement('img');
+      delButton.src = Icon;
+      delButton.style.visibility = 'hidden';
+      delButton.classList.add('del-img');
 
-      const delButton = document.createElement('a');
-      delButton.textContent = 'Delete';
-      delButton.classList.add('delete-btn');
-
-      li.appendChild(check);
-      li.appendChild(task);
-      li.appendChild(delButton);
-      listUl.appendChild(li);
+      liMain.appendChild(check);
+      liMain.appendChild(task);
+      liMain.appendChild(delButton);
+      listUl.appendChild(liMain);
     }
     const li = document.createElement('li');
     const clearComplete = document.createElement('a');
     clearComplete.setAttribute.src = '#';
     clearComplete.textContent = 'Clear all completed';
     li.classList.add('clear-complete');
+    clearComplete.id = 'clear-all-completed';
 
     li.appendChild(clearComplete);
     listUl.appendChild(li);
     list.appendChild(listUl);
+    document.body.appendChild(list);
   } else {
     const li = document.createElement('li');
     const warn = document.createTextNode('p');
     warn.textContent = 'No task found';
+    refreshList();
     li.appendChild(warn);
     listUl.appendChild(li);
   }

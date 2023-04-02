@@ -96,18 +96,18 @@
   cursor: pointer;
 }
 
+.active-li {
+  background-color: bisque;
+}
+
 .clear-active:hover {
   color: white;
 }
 
-.delete-btn {
-  background-color: black;
-  border: 1px solid red;
-  border-radius: 8px;
+.del-img {
+  width: 2%;
   position: absolute;
   right: 31%;
-  color: white;
-  padding: 4px 6px;
   cursor: pointer;
 }
 

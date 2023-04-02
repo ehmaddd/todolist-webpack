@@ -1,8 +1,8 @@
 import './style.css';
 import populateList from './populatelist.js';
 import taskAuth from './taskauth.js';
-import getPrompt from './getNewValue.js';
 import statusUpdate from './status_update.js';
+import getPrompt from './getNewValue.js';
 
 class ToDo {
   constructor() {
@@ -25,6 +25,8 @@ class ToDo {
         this.taskArr.push(task);
       }
     }
+    this.storeLocalStorage();
+    this.showData();
   }
 
   // store data in local storage
@@ -58,43 +60,33 @@ const taskText = document.querySelector('#addNew');
 taskText.addEventListener('keyup', (ev) => {
   if (ev.key === 'Enter') {
     todo.addTask();
-    todo.storeLocalStorage();
-    window.location.reload();
+    taskText.value = '';
   }
 });
 
-// add event listener to checkbox
-const addCheckboxEvent = () => {
-  const check = document.querySelectorAll('.check-task');
-  for (let i = 0; i < check.length; i += 1) {
-    check[i].addEventListener('click', (ev) => {
-      statusUpdate(ev, todo.check, todo.taskArr);
-    });
-  }
-};
+const listUl = document.querySelector('#list-ul');
+const delBttn = document.getElementsByClassName('del-img');
+let resArr;
 
-const addChecktext = () => {
-  const testP = document.querySelectorAll('.test-task');
-  for (let i = 0; i < testP.length; i += 1) {
-    testP[i].addEventListener('click', () => {
-      const original = todo.taskArr[i].description;
-      const change = getPrompt(original);
-      if (change === '' || change === ' ' || change === '  ') {
-        todo.taskArr[i].description = original;
-      } else {
-        todo.taskArr[i].description = change;
-        todo.storeLocalStorage();
-      }
-      window.location.reload();
-    });
-  }
-};
-
-const deleteComplete = () => {
-  const clearComplete = document.querySelector('.clear-complete');
-  let resArr;
-  if (clearComplete && todo.check) {
-    clearComplete.addEventListener('click', () => {
+listUl.addEventListener('click', (ev) => {
+  const tgt = ev.target;
+  if (tgt.tagName === 'INPUT') {
+    statusUpdate(ev, todo.check, todo.taskArr);
+  } else if (tgt.tagName === 'P') {
+    const prev = tgt.previousSibling;
+    const sibId = prev.id;
+    const original = todo.taskArr[sibId].description;
+    const change = getPrompt(original);
+    if (change === '' || change === ' ' || change === '  ') {
+      todo.taskArr[sibId].description = original;
+    } else {
+      todo.taskArr[sibId].description = change;
+      todo.storeLocalStorage();
+    }
+    todo.loadLocalStorage();
+    todo.loadWindow();
+  } else if (tgt.tagName === 'A') {
+    if (todo.check) {
       todo.check.sort((a, b) => b - a);
       resArr = todo.taskArr.filter((task) => {
         if (task.completed !== 'false') {
@@ -108,50 +100,93 @@ const deleteComplete = () => {
       }
       todo.storeLocalStorage();
       todo.loadLocalStorage();
-      window.location.reload();
-    });
+      todo.check = [];
+      localStorage.setItem('check', JSON.stringify(todo.check));
+      todo.loadWindow();
+    }
+  } else if (tgt.tagName === 'IMG') {
+    const prev = tgt.previousSibling;
+    const curr = prev.previousSibling;
+    todo.taskArr.splice(curr.id, 1);
+    for (let j = 0; j < todo.taskArr.length; j += 1) {
+      todo.taskArr[j].index = j + 1;
+    }
+    todo.storeLocalStorage();
+    todo.loadWindow();
   }
-};
+});
 
-const addDeleteBtn = () => {
-  const delBtn = document.querySelectorAll('.delete-btn');
-  for (let i = 0; i < delBtn.length; i += 1) {
-    delBtn[i].addEventListener('click', () => {
-      todo.taskArr.splice(i, 1);
-      for (let j = 0; j < todo.taskArr.length; j += 1) {
-        todo.taskArr[j].index = j + 1;
+listUl.addEventListener('mouseover', (ev) => {
+  if (todo.taskArr.length > 0) {
+    document.querySelector('.tooltip').style.visibility = 'visible';
+    if (ev.target.tagName === 'INPUT' || ev.target.tagName === 'P' || ev.target.tagName === 'LI' || ev.target.tagName === 'IMG') {
+      let liNum;
+      if (ev.target.tagName === 'INPUT') {
+        liNum = ev.target.id;
+      } else if (ev.target.tagName === 'P') {
+        liNum = ev.target.previousSibling.id;
+      } else if (ev.target.tagName === 'IMG') {
+        liNum = ev.target.previousSibling.previousSibling.id;
+      } else if (ev.target.tagName === 'LI') {
+        liNum = ev.target.firstChild.id;
+      } else {
+        liNum = -1;
       }
-      todo.storeLocalStorage();
-      window.location.reload();
-    });
-  }
-};
-
-const markStatus = () => {
-  const checkBox = document.querySelectorAll('.check-task');
-  for (let i = 0; i < checkBox.length; i += 1) {
-    if (todo.taskArr[i].completed === 'false') {
-      checkBox[i].checked = false;
-    } else {
-      checkBox[i].checked = true;
+      if (liNum >= 0) {
+        if (listUl.children.length > 0) {
+          listUl.children.item(liNum).classList.add('active-li');
+        }
+        if (delBttn) {
+          delBttn[liNum].style.visibility = 'visible';
+        }
+      }
     }
   }
-};
+});
+
+listUl.addEventListener('mouseout', (ev) => {
+  document.querySelector('.tooltip').style.visibility = '';
+  if (ev.target.tagName === 'INPUT' || ev.target.tagName === 'P' || ev.target.tagName === 'LI' || ev.target.tagName === 'IMG') {
+    let liNum;
+    if (ev.target.tagName === 'INPUT') {
+      liNum = ev.target.id;
+    } else if (ev.target.tagName === 'P') {
+      liNum = ev.target.previousSibling.id;
+    } else if (ev.target.tagName === 'IMG') {
+      liNum = ev.target.previousSibling.previousSibling.id;
+    } else if (ev.target.tagName === 'LI') {
+      liNum = ev.target.firstChild.id;
+    } else {
+      liNum = -1;
+    }
+    if (liNum >= 0) {
+      if (listUl.children.length > 0) {
+        listUl.children.item(liNum).classList.remove('active-li');
+      }
+      if (delBttn) {
+        delBttn[liNum].style.visibility = 'hidden';
+      }
+    }
+  }
+});
 
 window.addEventListener('load', () => {
+  if (todo.check) {
+    todo.check.sort((a, b) => b - a);
+    const resArr = todo.taskArr.filter((task) => {
+      if (task.completed !== 'false') {
+        return false;
+      }
+      return task;
+    });
+    todo.taskArr = resArr;
+    for (let j = 0; j < todo.taskArr.length; j += 1) {
+      todo.taskArr[j].index = j + 1;
+    }
+    todo.storeLocalStorage();
+    todo.loadLocalStorage();
+    todo.check = [];
+    localStorage.setItem('check', JSON.stringify(todo.check));
+  }
   todo.loadWindow();
-  addCheckboxEvent();
-  addChecktext();
-  addDeleteBtn();
-  deleteComplete();
-  markStatus();
-});
-
-const todoList = document.querySelector('#list-ul');
-todoList.addEventListener('mouseover', () => {
-  document.querySelector('.tooltip').style.visibility = 'visible';
-});
-
-todoList.addEventListener('mouseout', () => {
-  document.querySelector('.tooltip').style.visibility = '';
 });

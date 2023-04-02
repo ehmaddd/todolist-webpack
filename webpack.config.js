@@ -6,10 +6,10 @@ module.exports = {
   entry: {
     index: path.resolve(__dirname, 'src', 'index.js'),
   },
-  devtool: 'inline-source-map',
   devServer: {
     static: './dist',
   },
+  devtool: 'inline-source-map',
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Development',
@@ -26,6 +26,10 @@ module.exports = {
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
       },
     ],
   },

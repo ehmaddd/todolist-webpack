@@ -1,18 +1,5 @@
-const checkBox = (checkId) => {
-  const testTask = document.querySelectorAll('.test-task');
-  const clearComplete = document.querySelector('.clear-complete');
-  testTask[checkId].style.textDecoration = 'line-through';
-  clearComplete.classList.add('clear-active');
-};
-
-const uncheckBox = (checkId, checkArr) => {
-  const testTask = document.querySelectorAll('.test-task');
-  const clearComplete = document.querySelector('.clear-complete');
-  testTask[checkId].style.textDecoration = null;
-  if (checkArr.length <= 0) {
-    clearComplete.classList.remove('clear-active');
-  }
-};
+import checkBox from './check.js';
+import uncheckBox from './uncheck.js';
 
 const statusUpdate = (ev, checkArr, taskArr) => {
   const checkId = ev.target.id;
