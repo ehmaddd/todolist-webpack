@@ -1,11 +1,11 @@
-const getPrompt = (or) => {
+const getPrompt = (originalValue) => {
   // eslint-disable-next-line no-alert
-  const newValue = prompt('Enter new value', or);
+  const newValue = prompt('Enter new value', originalValue);
   let value;
   if (newValue) {
     value = newValue;
   } else {
-    value = or;
+    value = originalValue;
   }
   return value;
 };
